@@ -48,7 +48,8 @@ func readingMangaTable(db sql.DB) []DbMangaEntry {
 		var manga string
 		var lastChapter int
 		var monitoring bool
-		err := mangRows.Scan(&id, &manga, &lastChapter, &monitoring)
+		var identifier string
+		err := mangRows.Scan(&id, &manga, &lastChapter, &monitoring, &identifier)
 		if err != nil {
 			log.Printf("Coudln't scan row", err)
 		}
@@ -58,9 +59,10 @@ func readingMangaTable(db sql.DB) []DbMangaEntry {
 			Dmanga:       manga,
 			DlastChapter: lastChapter,
 			Dmonitoring:  monitoring,
+			Didentifier:  identifier,
 		}
 		mangaL = append(mangaL, entry)
-		log.Printf("id:%d ; manga: %s; lc: %d ; mon: %t \n", entry.Did, entry.Dmanga, entry.DlastChapter, entry.Dmonitoring)
+		log.Printf("id:%d ; manga: %s; lc: %d ; mon: %t \n", entry.Did, entry.Dmanga, entry.DlastChapter, entry.Dmonitoring, entry.Didentifier)
 	}
 	if err := mangRows.Err(); err != nil {
 		log.Fatal("Error iterating mangRows: ", err.Error())

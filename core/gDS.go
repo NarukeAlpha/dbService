@@ -5,6 +5,7 @@ type DbMangaEntry struct {
 	Dmanga       string
 	DlastChapter int
 	Dmonitoring  bool
+	Didentifier  string
 }
 
 type DbChapterEntry struct {
