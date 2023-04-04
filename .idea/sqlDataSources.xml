@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="DdlMappings">
+    <mapping uuid="c45e3d5a-db79-4ffd-91ce-5d3bbcf199a2" name="@DESKTOP-GV2MER0 Mapping">
+      <data-sources db="a03f6260-26d5-4aa2-b27f-d267105dd664" ddl="30b99cbd-c120-4664-bb01-9bff21c15e3a" />
+      <scope>
+        <node kind="database" negative="1" />
+      </scope>
+    </mapping>
+  </component>
+</project>
