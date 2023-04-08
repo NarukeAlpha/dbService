@@ -7,10 +7,11 @@ import (
 	"github.com/joho/godotenv"
 	"log"
 	"os"
+	"sync"
 )
 
-func SqlInit() ([]DbMangaEntry, []DbChapterEntry) {
-
+func SqlInit(wg *sync.WaitGroup) ([]DbMangaEntry, []DbChapterEntry) {
+	defer wg.Done()
 	//loading sql key from .env
 	err := godotenv.Load(".env")
 	if err != nil {
@@ -35,7 +36,7 @@ func SqlInit() ([]DbMangaEntry, []DbChapterEntry) {
 
 func readingMangaTable(db sql.DB) []DbMangaEntry {
 	var mangaL []DbMangaEntry
-	query := "SELECT ID, Manga, LastChapeter, Monitoring FROM MangaList"
+	query := "SELECT ID, Manga, LastChapter, Monitoring, Identifier FROM MangaList"
 	mangRows, err := db.QueryContext(context.Background(), query)
 	if err != nil {
 		log.Fatal("Error querying database: ", err.Error())
