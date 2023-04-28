@@ -15,4 +15,14 @@ Content-Type: application/json
 ###
 GET http://localhost:8080/get-MangaList
 
+###
+POST http://localhost:8080/update-ChapterList
+Content-Type: application/json
 
+{
+
+  "Did": 1,
+  "Dchapter": 241,
+  "DChapterLink": "readeleceed.com/manga/eleceed-chapter-241/",
+  "Dreleased": false
+}

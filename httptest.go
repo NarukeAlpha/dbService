@@ -29,8 +29,11 @@ func main() {
 	//	Didentifier:  didentifier,
 	//}
 
-	payload := []byte(`{"Did": 55, "Dmanga": "MangaUrl", "DlastChapter": 200, "Dmonitoring": true, "Didentifier": "MangaChapterDate"}`)
+	/*payload := []byte(`{"Did": 55, "Dmanga": "MangaUrl", "DlastChapter": 200, "Dmonitoring": true, "Didentifier": "MangaChapterDate"}`)
 	url := "http://localhost:8080/update-MangaList"
+	*/
+	payload := []byte(`{"Did": 1, "Dchapter": "241", "DChapterLink": "https://readeleceed.com/manga/eleceed-chapter-241/", "Dreleased": false}`)
+	url := "http://localhost:8080/update-ChapterList"
 
 	resp, err := sendPostRequest(url, payload)
 	if err != nil {

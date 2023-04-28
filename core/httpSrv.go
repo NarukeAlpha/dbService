@@ -40,5 +40,23 @@ func InitHttpServerMux(mL []DbMangaEntry, cL []DbChapterEntry) mux.Router {
 
 	}).Methods("POST")
 
+	rt.HandleFunc("/update-ChapterList", func(w http.ResponseWriter, r *http.Request) {
+		var chapterEntry DbChapterEntry
+		_, err2 := json.Marshal(r.Body)
+		if err2 != nil {
+			http.Error(w, err2.Error(), http.StatusBadRequest)
+			return
+		}
+		if err := json.NewDecoder(r.Body).Decode(&chapterEntry); err != nil {
+			http.Error(w, err.Error(), http.StatusBadRequest)
+			return
+		}
+		cL = append(cL, chapterEntry)
+		var db = dbConnection()
+		defer db.Close()
+		addChapterListTable(db, chapterEntry)
+
+	}).Methods("POST")
+
 	return *rt
 }
