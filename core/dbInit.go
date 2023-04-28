@@ -10,8 +10,8 @@ import (
 	"sync"
 )
 
-func SqlInit(wg *sync.WaitGroup) ([]DbMangaEntry, []DbChapterEntry) {
-	defer wg.Done()
+// dbConnection is a function that returns a sql.DB object dynamically, to be used in other functions
+func dbConnection() sql.DB {
 	//loading sql key from .env
 	err := godotenv.Load(".env")
 	if err != nil {
@@ -24,10 +24,16 @@ func SqlInit(wg *sync.WaitGroup) ([]DbMangaEntry, []DbChapterEntry) {
 	if err != nil {
 		log.Fatal("Error creating connection pool: ", err.Error())
 	}
-	defer db.Close()
-	var mangaEntry []DbMangaEntry = readingMangaTable(*db)
+	return *db
+}
 
-	var chapterEntry []DbChapterEntry = readingChapterListTable(*db)
+func SqlInit(wg *sync.WaitGroup) ([]DbMangaEntry, []DbChapterEntry) {
+	defer wg.Done()
+	var db sql.DB = dbConnection()
+	defer db.Close()
+	var mangaEntry []DbMangaEntry = readingMangaTable(db)
+
+	var chapterEntry []DbChapterEntry = readingChapterListTable(db)
 
 	//Loaded all mangas, now loading all chapters
 
@@ -102,4 +108,17 @@ func readingChapterListTable(db sql.DB) []DbChapterEntry {
 		}
 	}
 	return chapterL
+}
+func updateMangaListTable(db sql.DB, entry DbMangaEntry) {
+
+	var boolean int = 0
+	if entry.Dmonitoring == true {
+		boolean = 1
+	}
+	var query = fmt.Sprintf("UPDATE MangaList SET LastChapter = %d, Monitoring = %v WHERE ID = %d", entry.DlastChapter, boolean, entry.Did)
+	_, err := db.ExecContext(context.Background(), query)
+	if err != nil {
+		log.Fatalf("failed to update manga list row:", err.Error())
+
+	}
 }

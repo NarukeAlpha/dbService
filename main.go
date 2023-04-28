@@ -19,20 +19,6 @@ func main() {
 
 	r := core.InitHttpServerMux(MangaList, ChapterList)
 
-	//s := http.NewServeMux()
-	//s.Handler =
-	//
-	//	http.HandleFunc("/mangas", func(w http.ResponseWriter, r *http.Request) {
-	//		if err := json.NewEncoder(w).Encode(MangaList); err != nil {
-	//			http.Error(w, err.Error(), http.StatusInternalServerError)
-	//			return
-	//		}
-	//	})
-	//http.HandleFunc("/exit", func(w http.ResponseWriter, r *http.Request) {
-	//	os.Exit(2)
-	//
-	//})
-	//
 	http.ListenAndServe("localhost:8080", &r)
 
 }

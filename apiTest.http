@@ -1,0 +1,18 @@
+POST http://localhost:8080/update-MangaList
+Content-Type: application/json
+
+{
+
+  "Did": 55,
+  "Dmanga": "MangaUrl",
+  "DlastChapter": 200,
+  "Dmonitoring": true,
+  "Didentifier": "MangaChapterDate"
+
+
+}
+
+###
+GET http://localhost:8080/get-MangaList
+
+
