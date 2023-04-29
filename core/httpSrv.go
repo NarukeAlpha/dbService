@@ -2,6 +2,7 @@ package core
 
 import (
 	"encoding/json"
+	"fmt"
 	"github.com/gorilla/mux"
 	"net/http"
 	"os"
@@ -9,54 +10,54 @@ import (
 
 func InitHttpServerMux(mL []DbMangaEntry, cL []DbChapterEntry) mux.Router {
 	rt := mux.NewRouter()
-	rt.HandleFunc("/get-MangaList", func(w http.ResponseWriter, request *http.Request) {
-		if err := json.NewEncoder(w).Encode(mL); err != nil {
-			http.Error(w, err.Error(), http.StatusInternalServerError)
-			return
-		}
-	}).Methods("GET")
-
-	rt.HandleFunc("/get-ChapterList", func(w http.ResponseWriter, request *http.Request) {
-		if err := json.NewEncoder(w).Encode(mL); err != nil {
-			http.Error(w, err.Error(), http.StatusInternalServerError)
-			return
-		}
-	}).Methods("GET")
-
 	rt.HandleFunc("/exit", func(w http.ResponseWriter, r *http.Request) {
 		os.Exit(2)
 	})
+	rt.HandleFunc("/MangaList", func(w http.ResponseWriter, request *http.Request) {
+		switch request.Method {
+		case "GET":
+			if err := json.NewEncoder(w).Encode(mL); err != nil {
+				http.Error(w, err.Error(), http.StatusInternalServerError)
+				return
+			}
+		case "PUT":
+			var mangaEntry DbMangaEntry
+			if err := json.NewDecoder(request.Body).Decode(&mangaEntry); err != nil {
+				http.Error(w, err.Error(), http.StatusBadRequest)
+				return
+			}
+			mL = append(mL, mangaEntry)
+			var db = dbConnection()
+			defer db.Close()
+			updateMangaListTable(db, mangaEntry)
 
-	rt.HandleFunc("/update-MangaList", func(w http.ResponseWriter, r *http.Request) {
-		var mangaEntry DbMangaEntry
-		if err := json.NewDecoder(r.Body).Decode(&mangaEntry); err != nil {
-			http.Error(w, err.Error(), http.StatusBadRequest)
-			return
+		case "POST":
+			fmt.Println("POST still in dev")
 		}
-		mL = append(mL, mangaEntry)
-		var db = dbConnection()
-		defer db.Close()
-		updateMangaListTable(db, mangaEntry)
+	}).Methods("GET", "PUT", "POST")
 
-	}).Methods("POST")
+	rt.HandleFunc("/ChapterList", func(w http.ResponseWriter, request *http.Request) {
+		switch request.Method {
+		case "GET":
+			if err := json.NewEncoder(w).Encode(mL); err != nil {
+				http.Error(w, err.Error(), http.StatusInternalServerError)
+				return
+			}
+		case "PUT":
+			var chapterEntry DbChapterEntry
+			if err := json.NewDecoder(request.Body).Decode(&chapterEntry); err != nil {
+				http.Error(w, err.Error(), http.StatusBadRequest)
+				return
+			}
+			cL = append(cL, chapterEntry)
+			var db = dbConnection()
+			defer db.Close()
+			addChapterListTable(db, chapterEntry)
+		case "POST":
+			fmt.Println("POST still in dev")
 
-	rt.HandleFunc("/update-ChapterList", func(w http.ResponseWriter, r *http.Request) {
-		var chapterEntry DbChapterEntry
-		_, err2 := json.Marshal(r.Body)
-		if err2 != nil {
-			http.Error(w, err2.Error(), http.StatusBadRequest)
-			return
 		}
-		if err := json.NewDecoder(r.Body).Decode(&chapterEntry); err != nil {
-			http.Error(w, err.Error(), http.StatusBadRequest)
-			return
-		}
-		cL = append(cL, chapterEntry)
-		var db = dbConnection()
-		defer db.Close()
-		addChapterListTable(db, chapterEntry)
-
-	}).Methods("POST")
+	}).Methods("GET", "PUT", "POST")
 
 	return *rt
 }

@@ -125,21 +125,21 @@ func updateMangaListTable(db sql.DB, entry DbMangaEntry) {
 }
 func addChapterListTable(db sql.DB, entry DbChapterEntry) {
 	var boolean int = 0
-	var query = fmt.Sprintf("INSERT INTO ChapterList (ID,Chapter,ChapterLink,released) VALUES (%v,%v,%d,%v)", entry.Did, entry.Dchapter, entry.DChapterLink, boolean)
+	var query = fmt.Sprintf("INSERT INTO ChapterList (ID,Chapter,ChapterLink,released) VALUES (%v,%v,'%v',%v)", entry.Did, entry.Dchapter, entry.DChapterLink, boolean)
 	_, err := db.ExecContext(context.Background(), query)
 	if err != nil {
-		log.Fatalf("failed to add chapter list row:", err.Error())
+		log.Fatalf("failed to insert chapter list row:", err.Error())
 
 	}
 	boolean = 1
 	var lc = entry.Dchapter - 1
-	query = fmt.Sprintf("UPDATE ChapterList SET released = %v WHERE ID = %d", boolean, lc)
+	query = fmt.Sprintf("UPDATE ChapterList SET released = %v WHERE ID = %v AND Chapter = %v", boolean, entry.Did, lc)
 	_, err = db.ExecContext(context.Background(), query)
 	if err != nil {
 		log.Fatalf("failed to update old chapter list row:", err.Error())
 
 	}
-	query = fmt.Sprintf("UPDATE MangaList SET LastChapter = %d WHERE ID = %d", entry.Dchapter, entry.Did)
+	query = fmt.Sprintf("UPDATE MangaList SET LastChapter = %v WHERE ID = %v", entry.Dchapter, entry.Did)
 	_, err = db.ExecContext(context.Background(), query)
 	if err != nil {
 		log.Fatalf("failed to update manga list row:", err.Error())

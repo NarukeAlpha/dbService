@@ -11,6 +11,6 @@ type DbMangaEntry struct {
 type DbChapterEntry struct {
 	Did          int    `json:"did"`
 	Dchapter     int    `json:"dchapter"`
-	DChapterLink string `json:"d_chapter_link"`
+	DChapterLink string `json:"dChapterlink"`
 	Dreleased    bool   `json:"dreleased"`
 }
