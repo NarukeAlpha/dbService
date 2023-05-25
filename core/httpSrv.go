@@ -8,7 +8,7 @@ import (
 	"os"
 )
 
-func InitHttpServerMux(mL []DbMangaEntry, cL []DbChapterEntry) mux.Router {
+func InitHttpServerMux(mL []DbMangaEntry) mux.Router {
 	rt := mux.NewRouter()
 	rt.HandleFunc("/exit", func(w http.ResponseWriter, r *http.Request) {
 		os.Exit(2)
@@ -29,33 +29,10 @@ func InitHttpServerMux(mL []DbMangaEntry, cL []DbChapterEntry) mux.Router {
 			mL = append(mL, mangaEntry)
 			var db = dbConnection()
 			defer db.Close()
-			updateMangaListTable(db, mangaEntry)
+			addChapterToTable(db, mangaEntry)
 
 		case "POST":
 			fmt.Println("POST still in dev")
-		}
-	}).Methods("GET", "PUT", "POST")
-
-	rt.HandleFunc("/ChapterList", func(w http.ResponseWriter, request *http.Request) {
-		switch request.Method {
-		case "GET":
-			if err := json.NewEncoder(w).Encode(mL); err != nil {
-				http.Error(w, err.Error(), http.StatusInternalServerError)
-				return
-			}
-		case "PUT":
-			var chapterEntry DbChapterEntry
-			if err := json.NewDecoder(request.Body).Decode(&chapterEntry); err != nil {
-				http.Error(w, err.Error(), http.StatusBadRequest)
-				return
-			}
-			cL = append(cL, chapterEntry)
-			var db = dbConnection()
-			defer db.Close()
-			addChapterListTable(db, chapterEntry)
-		case "POST":
-			fmt.Println("POST still in dev")
-
 		}
 	}).Methods("GET", "PUT", "POST")
 
