@@ -38,7 +38,7 @@ func SqlInit() []DbMangaEntry {
 
 func readingMangaTable(db sql.DB) []DbMangaEntry {
 	var mangaL []DbMangaEntry
-	query := "SELECT ID, Manga, LastChapter, Monitoring, LastChapter, Identifier FROM MasterList"
+	query := "SELECT ID, Manga, LastChapter, Monitoring, ChapterLink, Identifier FROM MasterTable"
 	mangRows, err := db.QueryContext(context.Background(), query)
 	if err != nil {
 		log.Fatal("Error querying database: ", err.Error())
