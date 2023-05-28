@@ -89,7 +89,7 @@ func updateOffMangaListTable(db sql.DB, entry DbMangaEntry) {
 	}
 }
 func addChapterToTable(db sql.DB, entry DbMangaEntry) {
-	var query = fmt.Sprintf("UPDATE MasterTable SET LastChapter = %v WHERE ID = %v", entry.DlastChapter, entry.Did)
+	var query = fmt.Sprintf("UPDATE MasterTable SET LastChapter = %v, ChapterLink ='%v' WHERE ID = %v", entry.DlastChapter, entry.DchapterLink, entry.Did)
 	_, err := db.ExecContext(context.Background(), query)
 	if err != nil {
 		log.Fatalf("failed to update Chapter List row:", err.Error())

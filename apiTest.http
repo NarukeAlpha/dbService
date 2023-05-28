@@ -1,28 +1,2 @@
-PUT http://localhost:8080/MangaList
-Content-Type: application/json
-
-{
-
-  "Did": 55,
-  "Dmanga": "MangaUrl",
-  "DlastChapter": 200,
-  "Dmonitoring": true,
-  "Didentifier": "MangaChapterDate"
-
-
-}
-
 ###
-GET http://localhost:8080/get-MangaList
-
-###
-PUT http://localhost:8080/ChapterList
-Content-Type: application/json
-
-{
-
-  "Did": 1,
-  "Dchapter": 241,
-  "DChapterLink": "readeleceed.com/manga/eleceed-chapter-241/",
-  "Dreleased": false
-}
+GET http://localhost:8080/MangaList
