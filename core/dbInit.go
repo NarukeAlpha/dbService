@@ -92,8 +92,18 @@ func addChapterToTable(db sql.DB, entry DbMangaEntry) {
 	var query = fmt.Sprintf("UPDATE MasterTable SET LastChapter = %v, ChapterLink ='%v' WHERE ID = %v", entry.DlastChapter, entry.DchapterLink, entry.Did)
 	_, err := db.ExecContext(context.Background(), query)
 	if err != nil {
-		log.Fatalf("failed to update Chapter List row:", err.Error())
+		log.Fatalf("failed to update latest chapter in Manga Table:", err.Error())
 
 	}
 
+}
+
+func addNewMangaToTable(db sql.DB, entry DbMangaEntry) {
+	var boolean int = 1
+	var query = fmt.Sprintf("INSERT INTO MasterTable (Manga, LastChapter, Monitoring, ChapterLink, Identifier) VALUES ('%s', %d, '%v', '%s', '%s')", entry.Dmanga, entry.DlastChapter, boolean, entry.DchapterLink, entry.Didentifier)
+	_, err := db.ExecContext(context.Background(), query)
+	if err != nil {
+		log.Fatalf("failed to insert new manga in DB:", err.Error())
+
+	}
 }

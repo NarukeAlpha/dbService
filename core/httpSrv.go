@@ -2,7 +2,6 @@ package core
 
 import (
 	"encoding/json"
-	"fmt"
 	"github.com/gorilla/mux"
 	"net/http"
 	"os"
@@ -32,7 +31,15 @@ func InitHttpServerMux(mL []DbMangaEntry) mux.Router {
 			addChapterToTable(db, mangaEntry)
 
 		case "POST":
-			fmt.Println("POST still in dev")
+			var mangaEntry DbMangaEntry
+			if err := json.NewDecoder(request.Body).Decode(&mangaEntry); err != nil {
+				http.Error(w, err.Error(), http.StatusBadRequest)
+				return
+			}
+			mL = append(mL, mangaEntry)
+			var db = dbConnection()
+			defer db.Close()
+			addNewMangaToTable(db, mangaEntry)
 		}
 	}).Methods("GET", "PUT", "POST")
 
