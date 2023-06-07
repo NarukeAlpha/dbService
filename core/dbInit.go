@@ -95,15 +95,33 @@ func addChapterToTable(db sql.DB, entry DbMangaEntry) {
 		log.Fatalf("failed to update latest chapter in Manga Table:", err.Error())
 
 	}
+	log.Printf("Updated latest chapter in Manga Table for %s %d", entry.Dmanga, entry.DlastChapter)
 
 }
 
 func addNewMangaToTable(db sql.DB, entry DbMangaEntry) {
 	var boolean int = 1
-	var query = fmt.Sprintf("INSERT INTO MasterTable (Manga, LastChapter, Monitoring, ChapterLink, Identifier) VALUES ('%s', %d, '%v', '%s', '%s')", entry.Dmanga, entry.DlastChapter, boolean, entry.DchapterLink, entry.Didentifier)
-	_, err := db.ExecContext(context.Background(), query)
+	qGetLastId := fmt.Sprintf("SELECT TOP 1 ID FROM MasterTable ORDER BY ID DESC")
+	lastId, err := db.QueryContext(context.Background(), qGetLastId)
+	if err != nil {
+		log.Fatalf("failed to get last ID from Manga Table:", err.Error())
+	}
+
+	var lastIdInt int
+	for lastId.Next() {
+		err := lastId.Scan(&lastIdInt)
+		if err != nil {
+			log.Fatalf("failed to scan last ID from Manga Table:", err.Error())
+		}
+	}
+	lastId.Close()
+	var newID = lastIdInt + 1
+
+	var query = fmt.Sprintf("INSERT INTO MasterTable (ID, Manga, LastChapter, Monitoring, ChapterLink, Identifier) VALUES (%d,'%s', %d, %d, '%s', '%s')", newID, entry.Dmanga, entry.DlastChapter, boolean, entry.DchapterLink, entry.Didentifier)
+	_, err = db.ExecContext(context.Background(), query)
 	if err != nil {
 		log.Fatalf("failed to insert new manga in DB:", err.Error())
 
 	}
+	log.Printf("Added new manga to DB: %s", entry.Dmanga)
 }
